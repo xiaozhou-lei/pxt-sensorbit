@@ -985,7 +985,7 @@ namespace sensors {
     //% weight=70
     //% subcategory="基础输入模块"
     export function Button(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+        //pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
