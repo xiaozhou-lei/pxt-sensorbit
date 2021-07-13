@@ -1074,16 +1074,16 @@ namespace sensors {
     //% subcategory="基础输入模块"
     export function piano_module_V2(): void {
         let DATA = 0
-        pins.digitalWritePin(_SDO, 1)
+        pins.digitalWritePin(_PIANODIO, 1)
         control.waitMicros(93)
 
-        pins.digitalWritePin(_SDO, 0)
+        pins.digitalWritePin(_PIANODIO, 0)
         control.waitMicros(10)
 
         for (let i = 0; i < 16; i++) {
-            pins.digitalWritePin(_SCL, 1)
-            pins.digitalWritePin(_SCL, 0)
-            DATA |= pins.digitalReadPin(_SDO) << i
+            pins.digitalWritePin(_PIANOCLK, 1)
+            pins.digitalWritePin(_PIANOCLK, 0)
+            DATA |= pins.digitalReadPin(_PIANODIO) << i
         }
         control.waitMicros(2 * 1000)
         switch (DATA & 0xFFFF) {
