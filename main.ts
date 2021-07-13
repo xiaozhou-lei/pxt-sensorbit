@@ -48,6 +48,15 @@ enum ColorEffect {
     Flash = 0x03
 }
 
+enum rgb_ColorEffect {
+    //% block=none
+    None = 0x00,
+    //% block=breathing
+    Breathing = 0x01,
+    //% block=flash
+    Flash = 0x03
+}
+
 enum DHT11Type {
     //% block="temperature(℃)" 
     DHT11_temperature_C = 0,
@@ -64,72 +73,14 @@ enum _selectpin {
     Dpin = 2,
 }
 
-// enum RemoteButton {
-//     //% block=A
-//     A = 0x45,
-//     //% block=B
-//     B = 0x46,
-//     //% block=C
-//     C = 0x47,
-//     //% block=D
-//     D = 0x44,
-//     //% block=UP
-//     UP = 0x40,
-//     //% block=+
-//     Add = 0x43,
-//     //% block=LEFT
-//     Left = 0x07,
-//     //% block=OK
-//     Ok = 0x15,
-//     //% block=RIGHT
-//     Right = 0x09,
-//     //% block=DOWN
-//     Down = 0x19,
-//     //% block=-
-//     EQ = 0x0d,
-//     //% block=0
-//     NUM0 = 0x16,
-//     //% block=1
-//     NUM1 = 0x0c,
-//     //% block=2
-//     NUM2 = 0x18,
-//     //% block=3
-//     NUM3 = 0x5e,
-//     //% block=4
-//     NUM4 = 0x8,
-//     //% block=5
-//     NUM5 = 0x1c,
-//     //% block=6
-//     NUM6 = 0x5a,
-//     //% block=7
-//     NUM7 = 0x42,
-//     //% block=8
-//     NUM8 = 0x52,
-//     //% block=9
-//     NUM9 = 0x4A,
-// }
 
-
-enum IrPins {
-    P0 = 3,
-    P1 = 2,
-    P2 = 1,
-    P3 = 4,
-    P4 = 5,
-    P5 = 17,
-    P6 = 12,
-    P7 = 11,
-    P8 = 18,
-    P9 = 10,
-    P10 = 6,
-    P11 = 26,
-    P12 = 20,
-    P13 = 23,
-    P14 = 22,
-    P15 = 21,
-    P16 = 16,
-    P19 = 0,
-    P20 = 30,
+enum waterpin {
+    P0,
+    P1,
+    P2,
+    P3,
+    P4,
+    P10,
 }
 
 enum _rockerpin {
@@ -216,16 +167,7 @@ enum Select {
     _clear = 2,
 }
 
-enum Mode {
-    //% block="LOOP"
-    LOOP_MODE = 0,        // 循环模式
-    //% block="BUTTON"
-    BUTTON_MODE = 1,      // 按键模式
-    //% block="KEYWORDS"
-    KEYWORDS_MODE = 2,    // 关键字模式
-    //% block="KEYWORDS_AND"
-    KEYWORDS_AND_BUTTON = 3, //关键字加按键模式
-}
+
 
 enum barb_fitting {
     //% block="LEFT"
@@ -262,6 +204,18 @@ enum Shaft{
     Y_Shaft = 1,
 }
 
+enum Mode {
+    //% block="LOOP"
+    LOOP_MODE = 0,        // 循环模式
+    //% block="BUTTON"
+    BUTTON_MODE = 1,      // 按键模式
+    //% block="KEYWORDS"
+    KEYWORDS_MODE = 2,    // 关键字模式
+    //% block="KEYWORDS_AND"
+    KEYWORDS_AND_BUTTON = 3, //关键字加按键模式
+}
+
+
 //% color="#FFA500" weight=10 icon="\uf2c9" block="Sensor:bit"
 namespace sensors {
     //% blockId=actuator_buzzer0 block="actuator_buzzer0 pin ：%pin|status %status"   group="有源蜂鸣器"
@@ -285,7 +239,7 @@ namespace sensors {
         pins.digitalWritePin(pin, status)
     }
 
-    //% blockId=actuator_motor_run block="actuator_motor_run  %turn"  group="直流电机"
+    //% blockId=actuator_motor_run block="actuator_motor_run INA | %_INA | INB | %_INB | direction | %turn | speed %speed"  group="直流电机"
     //% weight=70
     //% inlineInputMode=inline
     //% speed.min=0 speed.max=255
@@ -336,18 +290,18 @@ namespace sensors {
     let _SDO = 0
     let _SCL = 0
 
-    //% blockId=actuator_keyborad_pin block="actuator_keyborad_pin|SDOPIN %SDO|SCLPIN %SCL"   group="触摸键盘"
+    //% blockId=actuator_keyborad_pin block="keyborad pin|SDOPIN %SDO|SCLPIN %SCL"   group="触摸键盘"
     //% weight=71
-    //% subcategory="执行器"
+    //% subcategory="基础输入模块"
     export function actuator_keyborad_pin(SDO: DigitalPin, SCL: DigitalPin): void {
 
         _SDO = SDO
         _SCL = SCL
     }
 
-    //% blockId=actuator_keyborad_read block="actuator_keyborad_read"   group="触摸键盘"
+    //% blockId=actuator_keyborad_read block="keyborad_read"   group="触摸键盘"
     //% weight=70
-    //% subcategory="执行器"
+    //% subcategory="基础输入模块"
     export function actuator_keyborad_read(): string {
         let DATA = 0
         pins.digitalWritePin(_SDO, 1)
@@ -394,7 +348,7 @@ namespace sensors {
     let _Bpins = 0
 
     //% blockId=setrgbpin block="set RGBlight pin|g %_GPin|b %_BPin|r %_RPin"   group="三色灯"
-    //% weight=70
+    //% weight=71
     //% subcategory="显示器"
     export function setRGBpin(_GPin: DigitalPin, _BPin: DigitalPin, _RPin: DigitalPin): void {
         _Gpins = _GPin
@@ -421,7 +375,7 @@ namespace sensors {
     let gpins = 0
     let ypins = 0
     //% blockId=setpin block="set light pin|g %GPin|y %YPin|r %RPin"   group="交通灯"
-    //% weight=70
+    //% weight=71
     //% subcategory="显示器"
     export function setpin(GPin: DigitalPin, YPin: DigitalPin, RPin: DigitalPin): void {
         gpins = GPin
@@ -473,7 +427,7 @@ namespace sensors {
         set(d << 4)
     }
 
-    //% block="LcdInit $addr" addr.defl="39"  group="LCD1602显示屏"  
+    //% block="LcdInit $addr" addr.defl="0x27"  group="LCD1602显示屏"  
     //% subcategory="显示器"
     //% weight=70
     export function i2cLcdInit(addr: number) {
@@ -539,28 +493,7 @@ namespace sensors {
         }
     }
 
-    // //% block="lcdon"   group="LCD1602显示屏"  
-    // //% subcategory="显示器"
-    // //% weight=66
-    // export function i2cLcdOn(): void {
-    //     lcdcmd(0x0C)
-    // }
-
-    // //% block="lcdoff"   group="LCD1602显示屏"  
-    // //% subcategory="显示器"
-    // //% weight=65
-    // export function i2cLcdOff(): void {
-    //     lcdcmd(0x08)
-    // }
-
-    // //% block="lcdclear"   group="LCD1602显示屏"  
-    // //% subcategory="显示器"
-    // //% weight=64
-    // export function i2cLcdClear(): void {
-    //     lcdcmd(0x01)
-    // }
-
-    //% block="i2cLcdDisplay_Control"   group="LCD1602显示屏"  
+    //% block="i2cLcdDisplay_Control %item"   group="LCD1602显示屏"  
     //% subcategory="显示器"
     //% weight=64
     export function i2cLcdDisplay_Control(item: Item): void {
@@ -575,25 +508,9 @@ namespace sensors {
         }
     }
 
-
-    // //% block="lcdlighton"   group="LCD1602显示屏"  
-    // //% subcategory="显示器"
-    // //% weight=63
-    // export function i2cLcdBacklightOn(): void {
-    //     BK = 8
-    //     lcdcmd(0)
-    // }
-
-    // //% block="lcdlightoff"   group="LCD1602显示屏"  
-    // //% subcategory="显示器"
-    // //% weight=62
-    // export function i2cLcdBacklightOff(): void {
-    //     BK = 0
-    //     lcdcmd(0)
-    // }
     //% subcategory="显示器"   group="LCD1602显示屏"
-    //% blockId="Backlight switch control"
-    //% weight=79
+    //%  blockId=seti2cLcdBacklight block="Backlight switch control %backlight"
+    //% weight=63
     export function seti2cLcdBacklight(backlight: LcdBacklight): void {
         if (backlight == 1) {
             BK = 8
@@ -973,7 +890,7 @@ namespace sensors {
     //% weight=70
     //% subcategory="基础输入模块"
     export function touchButton(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+       // pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return true;
         } else {
@@ -985,7 +902,7 @@ namespace sensors {
     //% weight=70
     //% subcategory="基础输入模块"
     export function Button(pin: DigitalPin): boolean {
-        //pins.digitalWritePin(pin, 0)
+     //   pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
@@ -997,7 +914,7 @@ namespace sensors {
     //% weight=70
     //% subcategory="基础输入模块"
     export function crashButton(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+       // pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
@@ -1084,7 +1001,7 @@ namespace sensors {
     //% weight=68
     //% subcategory="基础输入模块"
     export function _digitalRead(): boolean {
-        pins.digitalWritePin(Bpin, 0)
+       // pins.digitalWritePin(Bpin, 0)
         if (pins.digitalReadPin(Bpin) == 1) {
             return false;
         } else {
@@ -1140,6 +1057,59 @@ namespace sensors {
         }
     }
 
+	let _PIANODIO = 0
+    let _PIANOCLK = 0
+
+    //% blockId=basic_piano_pin block="basic_piano_pin_V2 |DIO pin %DIO|CLK pin %CLK"   group="钢琴模块"
+    //% weight=68
+    //% subcategory="基础输入模块"
+    export function basic_piano_pin_V2(DIO: DigitalPin, CLK: DigitalPin): void {
+
+        _PIANODIO = DIO
+        _PIANOCLK = CLK
+    }
+	
+	//% blockId=piano_module_V2 block="piano_module_V2 play piano"   group="钢琴模块"
+    //% weight=67
+    //% subcategory="基础输入模块"
+    export function piano_module_V2(): string {
+        let DATA = 0
+        pins.digitalWritePin(_SDO, 1)
+        control.waitMicros(93)
+
+        pins.digitalWritePin(_SDO, 0)
+        control.waitMicros(10)
+
+        for (let i = 0; i < 16; i++) {
+            pins.digitalWritePin(_SCL, 1)
+            pins.digitalWritePin(_SCL, 0)
+            DATA |= pins.digitalReadPin(_SDO) << i
+        }
+        control.waitMicros(2 * 1000)
+        switch (DATA & 0xFFFF) {
+            case 0xfefe: music.playTone(262, music.beat(BeatFraction.Half));break;
+            case 0xfdfd: music.playTone(294, music.beat(BeatFraction.Half));break;
+            case 0xfbfb: music.playTone(330, music.beat(BeatFraction.Half));break;
+            case 0xf7f7: music.playTone(349, music.beat(BeatFraction.Half));break;
+            case 0xefef: music.playTone(392, music.beat(BeatFraction.Half));break;
+            case 0xdfdf: music.playTone(440, music.beat(BeatFraction.Half));break;
+            case 0xbfbf: music.playTone(494, music.beat(BeatFraction.Half));break;
+            case 0x7f7f: music.playTone(523, music.beat(BeatFraction.Half));break;
+            default: break;
+        }
+    }
+
+
+    //% blockId=sensor_water block="Water vapor sensor pin %pines"  group="水蒸气传感器"
+    //% weight=70
+    //% inlineInputMode=inline
+    //% subcategory="传感器"
+    export function sensor_water(pines: AnalogPin): number{
+         return pins.analogReadPin(pines);
+         
+    }
+
+
     //% blockId=sensor_temperature block="Pin %pin reads the analog value of the LM35"  group="LM35温度传感器"
     //% weight=70
     //% inlineInputMode=inline
@@ -1155,7 +1125,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_flame(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+       // pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
@@ -1176,7 +1146,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_infraredTracking(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+     //   pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return true;
         } else {
@@ -1189,7 +1159,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_incline(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+      //  pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
@@ -1256,7 +1226,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_obstacleAvoid(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+       // pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
@@ -1274,7 +1244,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_reedSwitch(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+       // pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
@@ -1291,7 +1261,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_humanBody(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+     //   pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return true;
         } else {
@@ -1308,7 +1278,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_quake(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+     //   pins.digitalWritePin(pin, 0)
         if (pins.digitalReadPin(pin) == 1) {
             return false;
         } else {
@@ -1357,7 +1327,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_sound_digitalread(_DS: DigitalPin): boolean {
-        pins.digitalWritePin(_DS, 0)
+     //   pins.digitalWritePin(_DS, 0)
         if (pins.digitalReadPin(_DS) == 1) {
             return false;
         } else {
@@ -1381,7 +1351,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_rain_digitalread(_DR: DigitalPin): boolean {
-        pins.digitalWritePin(_DR, 0)
+      //  pins.digitalWritePin(_DR, 0)
         if (pins.digitalReadPin(_DR) == 1) {
             return false;
         } else {
@@ -1405,7 +1375,7 @@ namespace sensors {
     //% inlineInputMode=inline
     //% subcategory="传感器"
     export function sensor_gas_digitalread(_DG: DigitalPin): boolean {
-        pins.digitalWritePin(_DG, 0)
+      //  pins.digitalWritePin(_DG, 0)
         if (pins.digitalReadPin(_DG) == 1) {
             return true;
         } else {
@@ -1416,6 +1386,7 @@ namespace sensors {
     let initialized = false
     //let neoStrip: neopixel.Strip;
     let emRGBLight: EMRGBLight.EmakefunRGBLight;
+    let board_emRGBLight: EMRGBLight.EmakefunRGBLight;
     let matBuf = pins.createBuffer(17);
     let distanceBuf = 0;
 
@@ -1457,13 +1428,20 @@ namespace sensors {
         }
         emRGBLight.show();
     }
+    
+    function board_RgbDisplay(indexstart: number, indexend: number, rgb: RgbColors): void {
+        for (let i = indexstart; i <= indexend; i++) {
+            board_emRGBLight.setPixelColor(i, rgb);
+        }
+        board_emRGBLight.show();
+    }
 
     export function rus04_rgb(pin: DigitalPin, offset: number, index: number, rgb: number, effect: number): void {
         let start = 0, end = 0;
         if (!emRGBLight) {
-            emRGBLight = EMRGBLight.create(pin, offset+6, EMRGBPixelMode.RGB)
+            emRGBLight = EMRGBLight.create(pin, 10, EMRGBPixelMode.RGB)
         }
-        if(offset>=4){
+        //if(offset >= 4 || offset == 0){
             if (index == RgbUltrasonics.Left) {
                 start = 0;
                 end = 2;
@@ -1474,11 +1452,12 @@ namespace sensors {
                 start = 0;
                 end = 5;
             }
-        }
+       // }
         start += offset;
         end += offset;
         switch (effect) {
             case ColorEffect.None:
+                emRGBLight.setBrightness(255);
                 RgbDisplay(start, end, rgb);
                 break;
             case ColorEffect.Breathing:
@@ -1486,15 +1465,16 @@ namespace sensors {
                     emRGBLight.setBrightness(i);
                     RgbDisplay(start, end, rgb);
                     //basic.pause((255 - i)/2);
-                    basic.pause((i < 20) ? 80 : (255 / i));
+                    basic.pause((i < 50) ? 10 : (255 / i));
                 }
                 for (let i = 255; i > 0; i -= 2) {
                     emRGBLight.setBrightness(i);
                     RgbDisplay(start, end, rgb);
-                    basic.pause((i < 20) ? 80 : (255 / i));
+                    basic.pause((i < 50) ? 10 : (255 / i));
                 }
                 break;
             case ColorEffect.Rotate:
+                emRGBLight.setBrightness(255);
                 for (let i = 0; i < 4; i++) {
                     emRGBLight.setPixelColor(start, rgb);
                     emRGBLight.setPixelColor(start + 1, 0);
@@ -1526,21 +1506,109 @@ namespace sensors {
                     }
                     emRGBLight.show();
                     basic.pause(150);
+                    emRGBLight.setBrightness(0);
                 }
                 RgbDisplay(4, 9, 0);
                 break;
             case ColorEffect.Flash:
-                for (let i = 0; i < 6; i++) {
+                for (let i = 0; i < 3; i++) {
+                    emRGBLight.setBrightness(255);
                     RgbDisplay(start, end, rgb);
-                    basic.pause(150);
+                    basic.pause(100);
                     RgbDisplay(start, end, 0);
-                    basic.pause(150);
+                    basic.pause(50);
                 }
                 break;
         }
     }
+	
+    export function board_rus04_rgb(pin: DigitalPin, offset: number, index: number, rgb: number, effect: number): void {
+        let start = 0, end = 0;
+        if (!board_emRGBLight) {
+            board_emRGBLight = EMRGBLight.create(pin, 10, EMRGBPixelMode.RGB)
+        }
+        if(offset >= 4){
+            if (index == RgbUltrasonics.Left) {
+                start = 0;
+                end = 2;
+            } else if (index == RgbUltrasonics.Right) {
+                start = 3;
+                end = 5;
+            } else if (index == RgbUltrasonics.All) {
+                start = 0;
+                end = 5;
+            }
+        }
+        start += offset;
+        end += offset;
+        switch (effect) {
+            case ColorEffect.None:
+                board_emRGBLight.setBrightness(255);
+                board_RgbDisplay(start, end, rgb);
+                break;
+            case ColorEffect.Breathing:
+                for (let i = 0; i < 255; i += 2) {
+                    board_emRGBLight.setBrightness(i);
+                    board_RgbDisplay(start, end, rgb);
+                    //basic.pause((255 - i)/2);
+                    basic.pause((i < 50) ? 10 : (255 / i));
+                }
+                for (let i = 255; i > 0; i -= 2) {
+                    board_emRGBLight.setBrightness(i);
+                    board_RgbDisplay(start, end, rgb);
+                    basic.pause((i < 50) ? 10 : (255 / i));
+                }
+                break;
+            case ColorEffect.Rotate:
+                board_emRGBLight.setBrightness(255);
+                for (let i = 0; i < 4; i++) {
+                    board_emRGBLight.setPixelColor(start, rgb);
+                    board_emRGBLight.setPixelColor(start + 1, 0);
+                    board_emRGBLight.setPixelColor(start + 2, 0);
+                    if (index == RgbUltrasonics.All) {
+                        board_emRGBLight.setPixelColor(end - 2, rgb);
+                        board_emRGBLight.setPixelColor(end - 1, 0);
+                        board_emRGBLight.setPixelColor(end, 0);
+                    }
+                    board_emRGBLight.show();
+                    basic.pause(150);
+                    board_emRGBLight.setPixelColor(start, 0);
+                    board_emRGBLight.setPixelColor(start + 1, rgb);
+                    board_emRGBLight.setPixelColor(start + 2, 0);
+                    if (index == RgbUltrasonics.All) {
+                        board_emRGBLight.setPixelColor(end - 2, 0);
+                        board_emRGBLight.setPixelColor(end - 1, rgb);
+                        board_emRGBLight.setPixelColor(end, 0);
+                    }
+                    board_emRGBLight.show();
+                    basic.pause(150);
+                    board_emRGBLight.setPixelColor(start, 0);
+                    board_emRGBLight.setPixelColor(start + 1, 0);
+                    board_emRGBLight.setPixelColor(start + 2, rgb);
+                    if (index == RgbUltrasonics.All) {
+                        board_emRGBLight.setPixelColor(end - 2, 0);
+                        board_emRGBLight.setPixelColor(end - 1, 0);
+                        board_emRGBLight.setPixelColor(end, rgb);
+                    }
+                    board_emRGBLight.show();
+                    basic.pause(150);
+                    board_emRGBLight.setBrightness(0);
+                }
+                board_RgbDisplay(4, 9, 0);
+                break;
+            case ColorEffect.Flash:
+                for (let i = 0; i < 3; i++) {
+                    board_emRGBLight.setBrightness(255);
+                    board_RgbDisplay(start, end, rgb);
+                    basic.pause(100);
+                    board_RgbDisplay(start, end, 0);
+                    basic.pause(50);
+                }
+                break;
+        }
+}
 
-    //% blockId="motorbit_rus04" block="part %index show color %rgb effect %effect rgbpin %pin"  group="RGB超声波"
+    //% blockId="sensorbit_rus04" block="part %index show color %rgb effect %effect rgbpin %pin"  group="RGB超声波"
     //% weight=75
     //% inlineInputMode=inline
     //% subcategory="传感器"
@@ -1641,7 +1709,7 @@ namespace sensors {
     //% subcategory="传感器"
     //% inlineInputMode=inline
     export function sensor_tracking(pin: DigitalPin): boolean {
-        pins.digitalWritePin(pin, 0)
+        //pins.digitalWritePin(pin, 0)
            if (pins.digitalReadPin(pin) == 1) {
               return false;
           }else {
@@ -1673,10 +1741,10 @@ namespace sensors {
       //% subcategory="传感器"
       export function four_sensor_trackingValue(): number {
         let result = 0;
-        pins.digitalWritePin(outPin1, 0)
-        pins.digitalWritePin(outPin2, 0)
-        pins.digitalWritePin(outPin3, 0)
-        pins.digitalWritePin(outPin4, 0)
+//         pins.digitalWritePin(outPin1, 0)
+//         pins.digitalWritePin(outPin2, 0)
+//         pins.digitalWritePin(outPin3, 0)
+//         pins.digitalWritePin(outPin4, 0)
         if (pins.digitalReadPin(outPin1) == 1) {
           result = 1 | result;
         }else {
@@ -1700,7 +1768,7 @@ namespace sensors {
         return result;
       }
 
-            //% blockId="dht11value_v2" block="value of dht11 %dht11type at pin %dht11pin"  group="温湿度传感器"
+    //% blockId="dht11value_v2" block="value of dht11 %dht11type at pin %dht11pin"  group="温湿度传感器"
     //% subcategory="micro:bit(V2)"
     //% inlineInputMode=inline
     export function dht11value_v2(dht11pin: DigitalPin, dht11type: DHT11Type): number {
@@ -1754,39 +1822,7 @@ namespace sensors {
         }
     }
 
-    let VOICE_RESET_REG = 0x5;
-    let VOICE_IIC_ADDR = 0x79;
-    let VOICE_ADD_WORDS_REG = 0x04;
-    let VOICE_ASR_START_REG = 0x6;
-    let VOICE_RESULT_REG = 0;
-    let VOICE_CONFIG_TIME_REG = 0x3;
-
-    function i2cwrite(addr: number, reg: number, value: number) {
-        let buf = pins.createBuffer(2)
-        buf[0] = reg
-        buf[1] = value
-        pins.i2cWriteBuffer(addr, buf)
-    }
-
-    function i2cwrite1(addr: number, reg: number, value: number ,value1: string) {
-        let lengths = value1.length
-        let buf = pins.createBuffer(2+lengths)
-        //let arr = value1.split('')
-        buf[0] = reg 
-        buf[1] = value
-        let betys = []
-        betys = stringToBytes(value1)
-        for (let i = 0; i < betys.length; i++) {
-            buf[2+i] = betys[i]
-        }
-        pins.i2cWriteBuffer(addr, buf)
-    }
     
-    function i2ccmd(addr: number, value: number) {
-        let buf = pins.createBuffer(1)
-        buf[0] = value
-        pins.i2cWriteBuffer(addr, buf)
-    }
     
     function i2cread(addr: number, reg: number) {
         pins.i2cWriteNumber(addr, reg, NumberFormat.UInt8BE);
@@ -1794,76 +1830,7 @@ namespace sensors {
         return val;
     }
 
-    //% blockId="Speech_recognition_reset" block="Voice recognition module for reset"  group="语音识别模块"
-    //% subcategory="智能模块"
-    //% inlineInputMode=inline
-    export function Speech_recognition_reset(): void {
-        i2ccmd(VOICE_IIC_ADDR,VOICE_RESET_REG)
-        basic.pause(300)
-    }
-
-    //% blockId="Speech_recognition_mode" block="The voice recognition mode is set to %Mode"  group="语音识别模块"
-    //% subcategory="智能模块"
-    //% inlineInputMode=inline
-    export function Speech_recognition_mode(Mode : Mode): void {
-        i2cwrite(VOICE_IIC_ADDR,VOICE_RESET_REG,Mode)
-        basic.pause(300)
-    }
-
-    //% blockId="Speech_recognition_glossary" block="Voice recognition to set the word number %word_number|Word content %word_content"  group="语音识别模块"
-    //% subcategory="智能模块"
-    //% inlineInputMode=inline
-    export function Speech_recognition_glossary(word_number : number, word_content : string): void {
-        i2cwrite1(VOICE_IIC_ADDR, VOICE_ADD_WORDS_REG, word_number,word_content)
-        basic.pause(300)
-    }
-
-    //% blockId="Speech_recognition_start" block="Voice recognition starts to recognize"  group="语音识别模块"
-    //% subcategory="智能模块"
-    //% inlineInputMode=inline
-    export function Speech_recognition_start(): void {
-        i2ccmd(VOICE_IIC_ADDR,VOICE_ASR_START_REG)
-        basic.pause(300)
-    }
-
-    //% blockId="Speech_recognition_get_result" block="Speech recognition to get the corresponding number of the recognized words"   group="语音识别模块"
-    //% subcategory="智能模块"
-    //% inlineInputMode=inline
-    export function Speech_recognition_get_result(): number {
-       let result =i2cread(VOICE_IIC_ADDR,VOICE_RESULT_REG)
-       return result;
-    }
-
-    //% blockId="Speech_recognition_time" block="Voice recognition to set wake-up time %time"  group="语音识别模块"
-    //% subcategory="智能模块"
-    //% inlineInputMode=inline
-    export function Speech_recognition_time(time : number): void {
-        i2cwrite(VOICE_IIC_ADDR,VOICE_CONFIG_TIME_REG,time)
-        basic.pause(300)
-    }
-
-    function stringToBytes (str : string) {  
-
-        
-        let ch = 0;
-        let st = 0;
-        let gm:number[]; 
-        gm = [];
-        for (let i = 0; i < str.length; i++ ) { 
-            ch = str.charCodeAt(i);  
-            st = 0 ;                 
-
-           do {  
-                st = ( ch & 0xFF );  
-                ch = ch >> 8;   
-                gm.push(st);        
-            }    
-
-            while ( ch );  
-            
-        }  
-        return gm;  
-    } 
+    
 
     let JOYSTICK_I2C_ADDR = 0x5A;
     let JOYSTICK_LEFT_X_REG = 0x10;
@@ -1949,15 +1916,120 @@ namespace sensors {
     //% subcategory="基础输入模块"
     //% inlineInputMode=inline
     export function Gamepad_Status(button : barb_fitting,status : key_status): boolean {
-        if(Get_Button_Status(button) == status)
-    {
-        return true;
-    }else{
-        return false;
-    }
+	    if(Get_Button_Status(button) == status)
+	    {
+		return true;
+	    }else{
+		return false;
+	    }
     }
       
+     let VOICE_RESET_REG = 0x5;
+    let VOICE_IIC_ADDR = 0x79;
+    let VOICE_ADD_WORDS_REG = 0x04;
+    let VOICE_ASR_START_REG = 0x6;
+    let VOICE_RESULT_REG = 0;
+    let VOICE_CONFIG_TIME_REG = 0x3;
 
+    function i2cwrite(addr: number, reg: number, value: number) {
+        let buf = pins.createBuffer(2)
+        buf[0] = reg
+        buf[1] = value
+        pins.i2cWriteBuffer(addr, buf)
+    }
+
+    function i2cwrite1(addr: number, reg: number, value: number ,value1: string) {
+        let lengths = value1.length
+        let buf = pins.createBuffer(2+lengths)
+        //let arr = value1.split('')
+        buf[0] = reg 
+        buf[1] = value
+        let betys = []
+        betys = stringToBytes(value1)
+        for (let i = 0; i < betys.length; i++) {
+            buf[2+i] = betys[i]
+        }
+        pins.i2cWriteBuffer(addr, buf)
+    }
+
+    function i2ccmd(addr: number, value: number) {
+        let buf = pins.createBuffer(1)
+        buf[0] = value
+        pins.i2cWriteBuffer(addr, buf)
+    }
+
+
+
+    //% blockId="Speech_recognition_reset" block="Voice recognition module for reset"  group="语音识别模块"
+    //% subcategory="智能模块"
+    //% inlineInputMode=inline
+    export function Speech_recognition_reset(): void {
+        i2ccmd(VOICE_IIC_ADDR,VOICE_RESET_REG)
+        basic.pause(300)
+    }
+
+    //% blockId="Speech_recognition_mode" block="The voice recognition mode is set to %Mode"  group="语音识别模块"
+    //% subcategory="智能模块"
+    //% inlineInputMode=inline
+    export function Speech_recognition_mode(Mode : Mode): void {
+        i2cwrite(VOICE_IIC_ADDR,VOICE_RESET_REG,Mode)
+        basic.pause(300)
+    }
+
+    //% blockId="Speech_recognition_glossary" block="Voice recognition to set the word number %word_number|Word content %word_content"  group="语音识别模块"
+    //% subcategory="智能模块"
+    //% inlineInputMode=inline
+    export function Speech_recognition_glossary(word_number : number, word_content : string): void {
+        i2cwrite1(VOICE_IIC_ADDR, VOICE_ADD_WORDS_REG, word_number,word_content)
+        basic.pause(300)
+    }
+
+    //% blockId="Speech_recognition_start" block="Voice recognition starts to recognize"  group="语音识别模块"
+    //% subcategory="智能模块"
+    //% inlineInputMode=inline
+    export function Speech_recognition_start(): void {
+        i2ccmd(VOICE_IIC_ADDR,VOICE_ASR_START_REG)
+        basic.pause(300)
+    }
+
+    //% blockId="Speech_recognition_get_result" block="Speech recognition to get the corresponding number of the recognized words"   group="语音识别模块"
+    //% subcategory="智能模块"
+    //% inlineInputMode=inline
+    export function Speech_recognition_get_result(): number {
+       let result =i2cread(VOICE_IIC_ADDR,VOICE_RESULT_REG)
+       return result;
+    }
+
+    //% blockId="Speech_recognition_time" block="Voice recognition to set wake-up time %time"  group="语音识别模块"
+    //% subcategory="智能模块"
+    //% inlineInputMode=inline
+    export function Speech_recognition_time(time : number): void {
+        i2cwrite(VOICE_IIC_ADDR,VOICE_CONFIG_TIME_REG,time)
+        basic.pause(300)
+    }
+
+    function stringToBytes (str : string) {  
+
+
+        let ch = 0;
+        let st = 0;
+        let gm:number[]; 
+        gm = [];
+        for (let i = 0; i < str.length; i++ ) { 
+            ch = str.charCodeAt(i);  
+            st = 0 ;                 
+
+           do {  
+                st = ( ch & 0xFF );  
+                ch = ch >> 8;   
+                gm.push(st);        
+            }    
+
+            while ( ch );  
+
+        }  
+        return gm;  
+    } 
 
 
 }
