@@ -1072,7 +1072,7 @@ namespace sensors {
 	//% blockId=piano_module_V2 block="piano_module_V2 play piano"   group="钢琴模块"
     //% weight=67
     //% subcategory="基础输入模块"
-    export function piano_module_V2(): string {
+    export function piano_module_V2(): void {
         let DATA = 0
         pins.digitalWritePin(_SDO, 1)
         control.waitMicros(93)
