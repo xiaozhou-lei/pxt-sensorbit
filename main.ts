@@ -1086,6 +1086,7 @@ namespace sensors {
             DATA |= pins.digitalReadPin(_PIANODIO) << i
         }
         control.waitMicros(2 * 1000)
+	basic.showNumber(DATA)
         switch (DATA & 0xFFFF) {
             case 0xfefe: music.playTone(262, music.beat(BeatFraction.Half));break;
             case 0xfdfd: music.playTone(294, music.beat(BeatFraction.Half));break;
